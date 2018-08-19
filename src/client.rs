@@ -345,7 +345,7 @@ impl Handler for ConnectionHandler {
 
         let connector = builder.build();
         connector
-            .danger_connect_without_providing_domain_for_certificate_verification_and_server_name_indication(sock)
+            .connect("golem.local", sock)
             .map_err(From::from)
     }
 }
