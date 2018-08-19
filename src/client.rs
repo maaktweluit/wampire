@@ -331,14 +331,16 @@ impl Handler for ConnectionHandler {
     #[cfg(feature="ssl")]
     fn upgrade_ssl_client(&mut self, sock: TcpStream, _: &Url) -> WSResult<SslStream<TcpStream>> {
         debug!("Upgrading ssl client");
+
         let mut builder = SslConnectorBuilder::new(SslMethod::tls()).map_err(|e| {
             WSError::new(WSErrorKind::Internal, format!("Failed to upgrade client to SSL: {}", e))
         })?;
-        builder.builder_mut().set_verify(SslVerifyMode::empty());
+        // builder.builder_mut().set_verify(SslVerifyMode::empty());
+        builder.builder_mut().set_certificate_file("/Users/mwu-gol/Library/Application Support/golem/default/rinkeby/crossbar/rpc_cert.pem");
 
         let connector = builder.build();
         connector
-            .danger_connect_without_providing_domain_for_certificate_verification_and_server_name_indication(sock)
+            .connect(sock)
             .map_err(From::from)
     }
 }
