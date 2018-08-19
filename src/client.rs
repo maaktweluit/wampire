@@ -1,7 +1,7 @@
 #[cfg(feature="ssl")]
 use openssl::x509::{X509};
 #[cfg(feature="ssl")]
-use openssl::ssl::{SslConnectorBuilder, SslMethod, SslStream, X509};
+use openssl::ssl::{SslConnectorBuilder, SslMethod, SslStream};
 #[cfg(feature="ssl")]
 use ws::util::TcpStream;
 
