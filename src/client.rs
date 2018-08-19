@@ -1,3 +1,13 @@
+#[cfg(feature="ssl")]
+extern crate openssl;
+
+extern crate url;
+
+#[cfg(feature="ssl")]
+use openssl::ssl::{SslConnectorBuilder, SslMethod, SslStream, SslVerifyMode};
+#[cfg(feature="ssl")]
+use ws::util::TcpStream;
+
 use ws::{connect, CloseCode, Error as WSError, ErrorKind as WSErrorKind, Handler, Handshake,
          Message as WSMessage, Request, Result as WSResult, Sender};
 
@@ -321,6 +331,19 @@ impl Handler for ConnectionHandler {
         request.add_protocol(WAMP_MSGPACK);
         request.add_protocol(WAMP_JSON);
         Ok(request)
+    }
+
+    #[cfg(feature="ssl")]
+    fn upgrade_ssl_client(&mut self, sock: TcpStream, _: &url::Url) -> ws::Result<SslStream<TcpStream>> {
+        let mut builder = SslConnectorBuilder::new(SslMethod::tls()).map_err(|e| {
+            ws::Error::new(ws::ErrorKind::Internal, format!("Failed to upgrade client to SSL: {}", e))
+        })?;
+        builder.builder_mut().set_verify(SslVerifyMode::empty());
+
+        let connector = builder.build();
+        connector
+            .danger_connect_without_providing_domain_for_certificate_verification_and_server_name_indication(sock)
+            .map_err(From::from)
     }
 }
 

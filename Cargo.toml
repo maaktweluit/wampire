@@ -1,7 +1,7 @@
 [package]
 name = "wampire"
 version = "0.1.2"
-authors = ["Dudochkin Victor <dudochkin.victor@gmail.com>", "Daniel Yule <yule@cs.dal.ca>"]
+authors = ["Golem Factory <contact@golem.network>", "Dudochkin Victor <dudochkin.victor@gmail.com>", "Daniel Yule <yule@cs.dal.ca>"]
 license = "MIT"
 readme = "README.md"
 repository = "https://github.com/ohyo-io/wampire"
@@ -30,6 +30,10 @@ eventual = "0.1.7"
 itertools = "0.7"
 argparse = "0.2.1"
 
+[dependencies.openssl]
+version = "0.9"
+optional = true
+
 [features]
 default-features = []
-ssl = ["ws/ssl"]
+ssl = ["ws/ssl", "openssl"]
