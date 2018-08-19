@@ -337,7 +337,7 @@ impl Handler for ConnectionHandler {
         let mut builder = SslConnectorBuilder::new(SslMethod::tls()).map_err(|e| {
             WSError::new(WSErrorKind::Internal, format!("Failed to upgrade client to SSL: {}", e))
         })?;
-        // builder.builder_mut().set_verify(SslVerifyMode::empty());
+        builder.builder_mut().set_verify(SslVerifyMode::empty());
         //
         //let cert = include_bytes!("/Users/mwu-gol/Library/Application Support/golem/default/rinkeby/crossbar/rpc_cert.pem");
         //let cert = X509::from_pem(cert).unwrap();
@@ -345,7 +345,7 @@ impl Handler for ConnectionHandler {
 
         let connector = builder.build();
         connector
-            .connect("echo.websocket.org", sock)
+            .danger_connect_without_providing_domain_for_certificate_verification_and_server_name_indication(sock)
             .map_err(From::from)
     }
 }
