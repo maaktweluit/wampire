@@ -331,7 +331,7 @@ impl Handler for ConnectionHandler {
     #[cfg(feature="ssl")]
     fn upgrade_ssl_client(&mut self, sock: TcpStream, _: &Url) -> WSResult<SslStream<TcpStream>> {
         let mut builder = SslConnectorBuilder::new(SslMethod::tls()).map_err(|e| {
-            WSError::new(ErrorKind::Internal, format!("Failed to upgrade client to SSL: {}", e))
+            Error::new(ErrorKind::Internal, format!("Failed to upgrade client to SSL: {}", e))
         })?;
         builder.builder_mut().set_verify(SslVerifyMode::empty());
 
