@@ -345,7 +345,7 @@ impl Handler for ConnectionHandler {
 
         let connector = builder.build();
         connector
-            .connect("golem.local", sock)
+            .connect("echo.websocket.org", sock)
             .map_err(From::from)
     }
 }
