@@ -339,9 +339,9 @@ impl Handler for ConnectionHandler {
         })?;
         // builder.builder_mut().set_verify(SslVerifyMode::empty());
         //
-        let cert = include_bytes!("/Users/mwu-gol/Library/Application Support/golem/default/rinkeby/crossbar/rpc_cert.pem");
-        let cert = X509::from_pem(cert).unwrap();
-        builder.builder_mut().set_certificate(&cert);
+        //let cert = include_bytes!("/Users/mwu-gol/Library/Application Support/golem/default/rinkeby/crossbar/rpc_cert.pem");
+        //let cert = X509::from_pem(cert).unwrap();
+        //builder.builder_mut().set_certificate(&cert);
 
         let connector = builder.build();
         connector
