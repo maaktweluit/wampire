@@ -14,6 +14,9 @@ extern crate ws;
 #[macro_use]
 extern crate log;
 
+#[cfg(feature="ssl")]
+extern crate openssl;
+
 pub mod client;
 mod error;
 mod messages;

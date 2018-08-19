@@ -1,9 +1,4 @@
 #[cfg(feature="ssl")]
-extern crate openssl;
-
-extern crate url;
-
-#[cfg(feature="ssl")]
 use openssl::ssl::{SslConnectorBuilder, SslMethod, SslStream, SslVerifyMode};
 #[cfg(feature="ssl")]
 use ws::util::TcpStream;
