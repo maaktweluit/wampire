@@ -1,5 +1,5 @@
 #[cfg(feature="ssl")]
-use openssl::{X509};
+use openssl::x509::{X509};
 #[cfg(feature="ssl")]
 use openssl::ssl::{SslConnectorBuilder, SslMethod, SslStream, X509};
 #[cfg(feature="ssl")]
