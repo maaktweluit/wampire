@@ -1,5 +1,5 @@
 #[cfg(feature="ssl")]
-use openssl::ssl::{SslConnectorBuilder, SslMethod, SslStream, SslVerifyMode};
+use openssl::ssl::{SslConnectorBuilder, SslMethod, SslStream, X509};
 #[cfg(feature="ssl")]
 use ws::util::TcpStream;
 
@@ -336,7 +336,8 @@ impl Handler for ConnectionHandler {
             WSError::new(WSErrorKind::Internal, format!("Failed to upgrade client to SSL: {}", e))
         })?;
         // builder.builder_mut().set_verify(SslVerifyMode::empty());
-        builder.builder_mut().set_certificate_file("/Users/mwu-gol/Library/Application Support/golem/default/rinkeby/crossbar/rpc_cert.pem");
+        let cert = X509::from_pem("/Users/mwu-gol/Library/Application Support/golem/default/rinkeby/crossbar/rpc_cert.pem")
+        builder.builder_mut().set_certificate(cert);
 
         let connector = builder.build();
         connector
