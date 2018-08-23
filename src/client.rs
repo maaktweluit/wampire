@@ -21,6 +21,7 @@ use rmp_serde::Serializer;
 use serde::{Deserialize, Serialize};
 use serde_json;
 use std::collections::HashMap;
+use std::error::Error as stdError;
 use std::fmt;
 use std::io::Cursor;
 use std::sync::mpsc::{channel, Sender as CHSender};
@@ -283,8 +284,8 @@ impl Handler for ConnectionHandler {
                             return self.connection_info.lock().unwrap().sender.shutdown();
                         }
                     }
-                    Err(_) => {
-                        error!("Could not understand MsgPack message");
+                    Err(err) => {
+                        error!("Could not understand MsgPack message. {:?}, {:?}", err, err.cause());
                     }
                 }
             }

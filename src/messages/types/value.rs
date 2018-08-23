@@ -7,6 +7,7 @@ use CallResult;
 
 pub type Dict = HashMap<String, Value>;
 pub type List = Vec<Value>;
+pub type Empty = ();
 
 // TODO properly implement Hash and Eq
 #[derive(Debug, PartialEq, Clone, Hash, Eq)]
@@ -33,6 +34,7 @@ pub enum Value {
     String(String),
     List(List),
     Boolean(bool),
+    Empty(()),
 }
 
 struct URIVisitor;
@@ -46,6 +48,7 @@ pub trait ArgList {
 
 pub trait ArgDict {
     fn get_int(&self, key: &str) -> CallResult<Option<i64>>;
+    fn get_uint(&self, key: &str) -> CallResult<Option<u64>>;
     fn get_string<'a>(&'a self, key: &str) -> CallResult<Option<&'a str>>;
 }
 
@@ -110,6 +113,26 @@ impl ArgList for List {
 }
 
 impl ArgDict for Dict {
+    fn get_uint(&self, key: &str) -> CallResult<Option<u64>> {
+        let value = self.get(key);
+        match value {
+            Some(value) => {
+                if let Value::UnsignedInteger(value) = *value {
+                    Ok(Some(value))
+                } else {
+                    Err(CallError::new(
+                        Reason::InvalidArgument,
+                        Some(vec![Value::String(format!(
+                            "Expected integer, got {}",
+                            value.summarize()
+                        ))]),
+                        None,
+                    ))
+                }
+            }
+            None => Ok(None),
+        }
+    }
     fn get_int(&self, key: &str) -> CallResult<Option<i64>> {
         let value = self.get(key);
         match value {
@@ -186,6 +209,7 @@ impl Value {
                 result
             }
             Value::Boolean(b) => b.to_string(),
+            Value::Empty(()) => "{}".to_string()
         }
     }
 }
@@ -235,6 +259,14 @@ impl<'de> serde::de::Visitor<'de> for ValueVisitor {
         E: serde::de::Error,
     {
         Ok(Value::Boolean(value))
+    }
+
+    #[inline]
+    fn visit_unit<E>(self) -> Result<Value, E>
+    where
+        E: serde::de::Error,
+    {
+        Ok(Value::Empty(()))
     }
 
     #[inline]
@@ -288,6 +320,7 @@ impl serde::Serialize for Value {
             Value::Float(f) => serializer.serialize_f64(f),
             Value::List(ref list) => list.serialize(serializer),
             Value::Boolean(b) => serializer.serialize_bool(b),
+            Value::Empty(()) => serializer.serialize_unit(),
         }
     }
 }
